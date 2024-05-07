@@ -53,4 +53,13 @@ public class Dish {
   @Column(name = "price", nullable = false)
   private Double price;
 
+  @Override
+  public String toString() {
+    return "Dish{" +
+           "id=" + id +
+           ", name='" + name + '\'' +
+           ", category=" + category +
+           ", price=" + price +
+           '}';
+  }
 }
