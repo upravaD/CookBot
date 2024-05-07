@@ -1,0 +1,36 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: CookBot
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+
+  liquibase:
+    enabled: true
+    change-log: db/changelog/changelog-master.yml
+    database-change-log-lock-table: ${DB_CHANGELOG_TABLE:locks}
+    database-change-log-table: ${DB_CHANGELOG_TABLE:changes}
+    drop-first: false
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: lazy
+        enabled: true
+  jpa:
+    open-in-view: false
+
+logging:
+  level:
+    root: INFO
+  pattern:
+    console: "%(%d{ISO8601}) %highlight(%-5level)[%cyan(%t)] %magenta(%C{}): %msg%n%throwable"
+
+telegram:
+  bot:
+    name: ${BOT_NAME:upravaDCookBot}
+    token: ${BOT_TOKEN:7162830449:AAGiQaDG0J8yuacvQr2HJE7s6Xez-cOCvaQ}

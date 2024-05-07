@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+  <!--  Создание таблицы dishes -->
+  <changeSet id="1715075524362-1" author="daktah">
+    <createTable tableName="dishes">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_dishes"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="category" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="recipe" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="image_url" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="price" type="DOUBLE">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <!--  Создание таблицы ingredients -->
+  <changeSet id="1715075524362-2" author="daktah">
+    <createTable tableName="ingredients">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ingredients"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="weight" type="INT"/>
+      <column name="cost" type="DOUBLE"/>
+      <column name="dish_id" type="UUID"/>
+    </createTable>
+  </changeSet>
+
+  <!--  Добавление внешнего ключа -->
+  <changeSet id="1715075524362-3" author="daktah">
+    <addForeignKeyConstraint baseColumnNames="dish_id" baseTableName="ingredients"
+      constraintName="FK_INGREDIENTS_ON_DISH" referencedColumnNames="id" referencedTableName="dishes"/>
+  </changeSet>
+
+</databaseChangeLog>
