@@ -1,17 +1,16 @@
-package com.upravad.cookbot.unit.service;
+package com.upravad.cookbot.integration.database;
 
 import static com.upravad.cookbot.database.enums.Category.BREAKFAST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.upravad.cookbot.config.ContainerConfiguration;
-import com.upravad.cookbot.database.dto.IngredientDto;
 import com.upravad.cookbot.database.model.Dish;
 import com.upravad.cookbot.database.model.Ingredient;
 import com.upravad.cookbot.database.repository.DishesRepository;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,11 +18,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+@Slf4j
 @SpringBootTest(classes = {ContainerConfiguration.class})
-class DishesServiceTest {
+class DishesRepoTest {
 
   @Autowired
   DishesRepository dishesRepository;
+
   private Dish dish;
 
   @BeforeEach
@@ -38,12 +39,14 @@ class DishesServiceTest {
   @Test
   @DisplayName("Create and save dish test")
   void createTest() {
-    Dish dto = getDish();
+    Dish expected = getDish();
 
-    assertEquals(dish.getName(), dto.getName());
-    assertEquals(dish.getCategory(), dto.getCategory());
-    assertNotNull(dish.getIngredients());
-    assertEquals(dish.getRecipe(), dto.getRecipe());
+    log.info(expected.toString());
+
+    assertThat(dish.getName()).isEqualTo(expected.getName());
+    assertThat(dish.getCategory()).isEqualTo(expected.getCategory());
+    assertThat(dish.getIngredients()).isNotNull();
+    assertThat(dish.getRecipe()).isEqualTo(expected.getRecipe());
   }
 
   @Test
@@ -53,30 +56,30 @@ class DishesServiceTest {
     assertTrue(optional.isPresent());
     Dish expected = optional.get();
 
-    assertEquals(dish.getName(), expected.getName());
-    assertEquals(dish.getCategory(), expected.getCategory());
-    assertNotNull(dish.getIngredients());
-    assertEquals(dish.getRecipe(), expected.getRecipe());
+    log.info(expected.toString());
+
+    assertThat(dish.getName()).isEqualTo(expected.getName());
+    assertThat(dish.getCategory()).isEqualTo(expected.getCategory());
+    assertThat(dish.getIngredients()).isNotNull();
+    assertThat(dish.getRecipe()).isEqualTo(expected.getRecipe());
   }
 
   @Test
-  @DisplayName("Find dish by name test")
+  @DisplayName("Update dish test")
   void updateTest() {
-    Optional<Dish> optional = dishesRepository.findByName(dish.getName());
-    assertTrue(optional.isPresent());
-
-    Dish updated = optional.get();
-    updated.setName("TEST");
-    dishesRepository.save(updated);
+    dish.setName("TEST");
+    dishesRepository.save(dish);
 
     Optional<Dish> optional1 = dishesRepository.findById(dish.getId());
     assertTrue(optional1.isPresent());
     Dish expected = optional1.get();
 
-    assertEquals(updated.getName(), expected.getName());
-    assertEquals(updated.getCategory(), expected.getCategory());
-    assertNotNull(updated.getIngredients());
-    assertEquals(updated.getRecipe(), expected.getRecipe());
+    log.info(expected.toString());
+
+    assertThat(dish.getName()).isEqualTo(expected.getName());
+    assertThat(dish.getCategory()).isEqualTo(expected.getCategory());
+    assertThat(dish.getIngredients()).isNotNull();
+    assertThat(dish.getRecipe()).isEqualTo(expected.getRecipe());
   }
 
   private Dish getDish() {
