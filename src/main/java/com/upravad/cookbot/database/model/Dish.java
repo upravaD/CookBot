@@ -1,18 +1,18 @@
 package com.upravad.cookbot.database.model;
 
-import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
 
 import com.upravad.cookbot.database.enums.Category;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,8 +41,8 @@ public class Dish {
   @Column(name = "category", nullable = false)
   private Category category;
 
-  @OneToMany(cascade = ALL, mappedBy = "dish")
-  private List<Ingredient> ingredients;
+  @OneToMany(mappedBy = "dish", fetch = FetchType.EAGER)
+  private Set<Ingredient> ingredients;
 
   @Column(name = "recipe", nullable = false)
   private String recipe;
@@ -57,8 +57,11 @@ public class Dish {
   public String toString() {
     return "Dish{" +
            "id=" + id +
-           ", name='" + name + '\'' +
+           ", name=" + name +
            ", category=" + category +
+           ", ingredients=" + ingredients +
+           ", recipe=" + recipe +
+           ", imageUrl=" + imageUrl +
            ", price=" + price +
            '}';
   }

@@ -19,7 +19,7 @@ spring:
   data:
     jpa:
       repositories:
-        bootstrap-mode: lazy
+        bootstrap-mode: deferred
         enabled: true
   jpa:
     open-in-view: false

@@ -1,16 +1,28 @@
 package com.upravad.cookbot.database.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import java.io.Serializable;
 import java.util.UUID;
-import lombok.Builder;
 
 /**
  * DTO for {@link com.upravad.cookbot.database.model.Ingredient}
  */
+@Getter
 @Builder
-public record IngredientDto(UUID id,
-                            String name,
-                            Integer weight,
-                            Double cost) implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+public class IngredientDto implements Serializable {
 
+  private UUID id;
+  private String name;
+  private Integer weight;
+  private Double cost;
+
+  @Override
+  public String toString() {
+    return "\n" + name + ": " + weight + " гр.";
+  }
 }
