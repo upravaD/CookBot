@@ -8,8 +8,9 @@ import com.upravad.cookbot.config.ContainerConfiguration;
 import com.upravad.cookbot.database.model.Dish;
 import com.upravad.cookbot.database.model.Ingredient;
 import com.upravad.cookbot.database.repository.DishesRepository;
-import java.util.List;
+import com.upravad.cookbot.database.repository.IngredientRepository;
 import java.util.Optional;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,9 @@ class DishesRepoTest {
 
   @Autowired
   DishesRepository dishesRepository;
+
+  @Autowired
+  IngredientRepository ingredientRepository;
 
   private Dish dish;
 
@@ -93,8 +97,8 @@ class DishesRepoTest {
         .build();
   }
 
-  private List<Ingredient> getIngredients() {
-    return List.of(
+  private Set<Ingredient> getIngredients() {
+    return Set.of(
         getIngredient("Вода", 600, 7.89),
         getIngredient("Сахар", 65, 3.47),
         getIngredient("Соль", 2, 0.04),
@@ -113,7 +117,7 @@ class DishesRepoTest {
         .build();
   }
 
-  private Double getPrice(List<Ingredient> ingredients) {
+  private Double getPrice(Set<Ingredient> ingredients) {
     return ingredients.stream()
         .mapToDouble(Ingredient::getCost)
         .sum();

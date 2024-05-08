@@ -14,7 +14,7 @@
 
 ##### [`RoadMap`](https://excalidraw.com/#json=6KQLA57IucvT2vDmGJ-ai,RB7ALI8H2mQoNinbvZcFyQ)
 
-<img alt="roadmap" height="300" src="src/main/resources/static/img.png">
+<img alt="roadmap" height="300" src="src/main/resources/static/images/img.png">
 
 ---
 

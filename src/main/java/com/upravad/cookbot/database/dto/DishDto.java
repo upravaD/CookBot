@@ -1,21 +1,43 @@
 package com.upravad.cookbot.database.dto;
 
 import com.upravad.cookbot.database.enums.Category;
-import java.io.Serializable;
-import java.util.List;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import java.io.Serializable;
+import java.util.UUID;
+import java.util.Set;
 
 /**
  * DTO for {@link com.upravad.cookbot.database.model.Dish}
  */
+@Getter
 @Builder
-public record DishDto(UUID id,
-                      String name,
-                      Category category,
-                      List<IngredientDto> ingredients,
-                      String recipe,
-                      String imageUrl,
-                      Double price) implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+public class DishDto implements Serializable {
+  private UUID id;
+  private String name;
+  private Category category;
+  private Set<IngredientDto> ingredients;
+  private String recipe;
+  private String imageUrl;
+  private Double price;
 
+  @Override
+  public String toString() {
+    return name + ": { " + "id=" + id +
+           ", \ncategory=" + category +
+           ", \ningredients= " + ingredients +
+           ", \nrecipe=" + recipe +
+           ", \nimageUrl=" + imageUrl +
+           ", \nprice=" + price +
+           " }\n";
+  }
+
+  public String description() {
+    return "Ингредиенты: " + ingredients +
+           ", \nСтоимость: " + price + " ₽\n";
+  }
 }
