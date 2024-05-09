@@ -1,30 +1,34 @@
 package com.upravad.cookbot.core;
 
+import static com.upravad.cookbot.exception.ExceptionMessage.NOT_EXECUTED;
+import static com.upravad.cookbot.exception.ExceptionMessage.DEFAULT;
 import static com.upravad.cookbot.core.Options.CREATE;
-import static com.upravad.cookbot.core.Options.GET;
-import static com.upravad.cookbot.core.Options.HELP;
 import static com.upravad.cookbot.core.Options.START;
+import static com.upravad.cookbot.core.Options.HELP;
+import static com.upravad.cookbot.core.Options.GET;
 
-import com.upravad.cookbot.core.senders.MessageSender;
-import com.upravad.cookbot.core.senders.PhotoSender;
-import com.upravad.cookbot.database.dto.DishDto;
-import com.upravad.cookbot.database.mapper.DishesMapper;
-import com.upravad.cookbot.exception.BaseException;
-import com.upravad.cookbot.service.impl.DishesServiceImpl;
-import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.interfaces.Validable;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.interfaces.Validable;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import com.upravad.cookbot.service.impl.DishesServiceImpl;
+import com.upravad.cookbot.database.mapper.DishesMapper;
+import com.upravad.cookbot.database.dto.DishDto;
+import com.upravad.cookbot.core.senders.MessageSender;
+import com.upravad.cookbot.core.senders.PhotoSender;
+import com.upravad.cookbot.exception.BaseException;
+import lombok.extern.slf4j.Slf4j;
+import java.util.UUID;
 
 /**
  * {@code BotCore} the main processor of the bot and
  * this class is responsible for processing incoming updates from {@code Telegram}.
+ *
+ * @author daktah
  */
 @Slf4j
 @Component
@@ -34,8 +38,8 @@ public class BotCore extends TelegramLongPollingBot {
   private final DishesMapper dishesMapper;
   @Value("${telegram.cookbot.name}")
   private String username;
-  private final MessageSender messageSender;
   private final PhotoSender photoSender;
+  private final MessageSender messageSender;
   private static final String OPTION_LOG = "\033[1;93mt{} \033[0;97m{}\033[0m";
 
   public BotCore(@Value("${telegram.cookbot.token}") String token,
@@ -94,7 +98,7 @@ public class BotCore extends TelegramLongPollingBot {
         }
         default -> {
           log.error(OPTION_LOG, messageText, update.getMessage().getFrom());
-          commit(messageSender.sendMessage(update, "И че это такое??? ахаха жми -> /help"));
+          commit(messageSender.sendMessage(update, DEFAULT.getMessage()));
         }
       }
     }
@@ -106,7 +110,6 @@ public class BotCore extends TelegramLongPollingBot {
    * @param validable from any Sender
    */
   private void commit(Validable validable) {
-//    log.info("\uD83D\uDFE2 \033[0;92mExecute \033[0;97m{}\033[0m", validable.getClass().getSimpleName());
     log.info("\uD83E\uDD66\033[0;92m Success \033[0;97m{}\033[0m", validable.getClass().getSimpleName());
     try {
       if (validable instanceof SendMessage message) {
@@ -118,7 +121,7 @@ public class BotCore extends TelegramLongPollingBot {
         log.info("\033[0;93m✉ caption ⤵\n\033[0;97m{}\033[0m", photo.getCaption());
       }
     } catch (TelegramApiException e) {
-      throw new BaseException(e, validable.getClass().getSimpleName() + " not executed");
+      throw new BaseException(e, validable.getClass().getSimpleName() + NOT_EXECUTED);
     }
   }
 }

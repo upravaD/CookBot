@@ -1,6 +1,7 @@
 package com.upravad.cookbot.service.impl;
 
 import static com.upravad.cookbot.database.enums.Category.BREAKFAST;
+import static com.upravad.cookbot.exception.ExceptionMessage.NOT_FOUND;
 
 import com.upravad.cookbot.database.repository.IngredientRepository;
 import com.upravad.cookbot.database.repository.DishesRepository;
@@ -46,7 +47,7 @@ public class DishesServiceImpl implements DishesService {
     log.info("\033[1;94mReading dish by name: \033[0;97m{}\033[0m", name);
     return dishesMapper.toDto(dishesRepository
         .findByName(name)
-        .orElseThrow(() -> new BaseException("Dish not found")));
+        .orElseThrow(() -> new BaseException(this.getClass().getSimpleName() + NOT_FOUND)));
   }
 
   @Override
@@ -54,7 +55,7 @@ public class DishesServiceImpl implements DishesService {
   public DishDto read(UUID dishesId) {
     log.info("\033[1;94mFind dish by id: \033[0;97m{}\033[0m", dishesId);
     Dish dish = dishesRepository.findById(dishesId)
-        .orElseThrow(() -> new BaseException("Dish not found"));
+        .orElseThrow(() -> new BaseException(this.getClass().getSimpleName() + NOT_FOUND));
     log.info("\033[1;92mSet ingredients to dish\033[0m");
     dish.setIngredients(ingredientRepository.findAllByDish(dish));
     return dishesMapper.toDto(dish);
