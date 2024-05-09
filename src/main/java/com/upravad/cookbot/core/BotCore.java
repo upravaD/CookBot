@@ -2,6 +2,7 @@ package com.upravad.cookbot.core;
 
 import static com.upravad.cookbot.exception.ExceptionMessage.NOT_EXECUTED;
 import static com.upravad.cookbot.exception.ExceptionMessage.ERROR;
+import static com.upravad.cookbot.core.Options.STICKER;
 import static com.upravad.cookbot.core.Options.CREATE;
 import static com.upravad.cookbot.core.Options.START;
 import static com.upravad.cookbot.core.Options.HELP;
@@ -41,6 +42,7 @@ public class BotCore extends TelegramLongPollingBot {
   private final PhotoSender photoSender;
   private final MessageSender messageSender;
   private static final String OPTION_LOG = "\033[1;93mt{} \033[0;97m{}\033[0m";
+  private static final String OPTION_LOG_ERROR = "\033[1;91m{} \033[0;97m{}\033[0m";
 
   public BotCore(@Value("${telegram.cookbot.token}") String token,
       DishesServiceImpl dishesService,
@@ -75,7 +77,8 @@ public class BotCore extends TelegramLongPollingBot {
       switch (Options.validate(messageText)) {
         case START -> {
           log.info(OPTION_LOG, START.getName(), update.getMessage().getFrom());
-          commit(messageSender.sendMessage(update, "Hello " + update.getMessage().getFrom().getUserName()));
+          commit(messageSender.sendMessage(update, "Регистрация " + update.getMessage().getFrom().getUserName() +
+                                                   " завершена для продолжения жми /help"));
         }
         case HELP -> {
           log.info(OPTION_LOG, HELP.getName(), update.getMessage().getFrom());
@@ -97,10 +100,15 @@ public class BotCore extends TelegramLongPollingBot {
               dto.getRecipe()));
         }
         default -> {
-          log.error(OPTION_LOG, messageText, update.getMessage().getFrom());
+          log.error(OPTION_LOG_ERROR, messageText, update.getMessage().getFrom());
           commit(messageSender.errorMessage(update, ERROR.getMessage()));
         }
       }
+    }
+
+    if (update.getMessage().hasSticker()) {
+      log.info(OPTION_LOG, STICKER.getName(), update.getMessage().getFrom());
+      commit(messageSender.sendMessage(update, update.getMessage().getSticker().getEmoji()));
     }
   }
 
@@ -114,11 +122,11 @@ public class BotCore extends TelegramLongPollingBot {
     try {
       if (validable instanceof SendMessage message) {
         execute(message);
-        log.info("\033[0;93m✉ text ⤵\n\033[0;97m{}\033[0m", message.getText());
+        log.info("\033[0;93m✉ answer text ⤵\n\033[0;97m{}\033[0m", message.getText());
       }
       if (validable instanceof SendPhoto photo) {
         execute(photo);
-        log.info("\033[0;93m✉ caption ⤵\n\033[0;97m{}\033[0m", photo.getCaption());
+        log.info("\033[0;93m✉ photo caption ⤵\n\033[0;97m{}\033[0m", photo.getCaption());
       }
     } catch (TelegramApiException e) {
       throw new BaseException(e, validable.getClass().getSimpleName() + NOT_EXECUTED);

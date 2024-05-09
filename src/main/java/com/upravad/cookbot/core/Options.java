@@ -27,9 +27,17 @@ public enum Options {
   HELP("/help"),
 
   /**
+   * Stickers.
+   */
+  STICKER("/sticker"),
+
+
+  // Exceptions
+
+  /**
    * Error message.
    */
-  ERROR("???"),
+  ERROR("/error"),
 
 
   // Recipe options
