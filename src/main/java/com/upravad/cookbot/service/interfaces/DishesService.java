@@ -1,4 +1,4 @@
-package com.upravad.cookbot.service;
+package com.upravad.cookbot.service.interfaces;
 
 import com.upravad.cookbot.database.dto.DishDto;
 import java.util.UUID;
