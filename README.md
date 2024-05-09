@@ -2,9 +2,9 @@
 
 [<img alt="telegramApi" height="" src="src/main/resources/static/images/telegram_logo.png">](https://core.telegram.org/api)
 
-<p> Телеграм бот @upravaDCookBot представляет собой кулинарную книгу, 
+Телеграм бот [@upravaDCookBot](https://t.me/upravaDCookBot) представляет собой кулинарную книгу, 
 где пользователь может добавить или посмотреть рецепты, 
-которые распределены по категориям. </p>
+которые распределены по категориям.
 
 ---
 
