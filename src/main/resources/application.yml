@@ -31,6 +31,6 @@ logging:
     console: "%(%d{ISO8601}) %highlight(%-5level)[%cyan(%t)] %magenta(%C{}): %msg%n%throwable"
 
 telegram:
-  bot:
-    name: ${BOT_NAME:upravaDCookBot}
-    token: ${BOT_TOKEN:7162830449:AAGiQaDG0J8yuacvQr2HJE7s6Xez-cOCvaQ}
+  cookbot:
+    name: ${COOKBOT_NAME:upravaDCookBot}
+    token: ${COOKBOT_TOKEN:7162830449:AAGiQaDG0J8yuacvQr2HJE7s6Xez-cOCvaQ}

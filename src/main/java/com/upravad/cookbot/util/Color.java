@@ -2,13 +2,11 @@ package com.upravad.cookbot.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
 /**
  *  Класс разных цветов для вывода в консоль.
  */
 @Getter
-@ToString
 @AllArgsConstructor
 public enum Color {
 
