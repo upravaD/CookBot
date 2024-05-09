@@ -1,7 +1,7 @@
 package com.upravad.cookbot.core;
 
 import static com.upravad.cookbot.exception.ExceptionMessage.NOT_EXECUTED;
-import static com.upravad.cookbot.exception.ExceptionMessage.DEFAULT;
+import static com.upravad.cookbot.exception.ExceptionMessage.ERROR;
 import static com.upravad.cookbot.core.Options.CREATE;
 import static com.upravad.cookbot.core.Options.START;
 import static com.upravad.cookbot.core.Options.HELP;
@@ -98,7 +98,7 @@ public class BotCore extends TelegramLongPollingBot {
         }
         default -> {
           log.error(OPTION_LOG, messageText, update.getMessage().getFrom());
-          commit(messageSender.sendMessage(update, DEFAULT.getMessage()));
+          commit(messageSender.errorMessage(update, ERROR.getMessage()));
         }
       }
     }
@@ -124,4 +124,5 @@ public class BotCore extends TelegramLongPollingBot {
       throw new BaseException(e, validable.getClass().getSimpleName() + NOT_EXECUTED);
     }
   }
+
 }

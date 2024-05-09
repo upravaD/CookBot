@@ -2,7 +2,6 @@ package com.upravad.cookbot.core;
 
 import static java.util.stream.Stream.of;
 
-import com.upravad.cookbot.exception.BaseException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -26,6 +25,11 @@ public enum Options {
    * List of all bot commands.
    */
   HELP("/help"),
+
+  /**
+   * Error message.
+   */
+  ERROR("???"),
 
 
   // Recipe options
@@ -52,7 +56,7 @@ public enum Options {
     return of(Options.values())
         .filter(options -> options.name().equals(optionValue.substring(1).toUpperCase()))
         .findFirst()
-        .orElseThrow(() -> new BaseException("Invalid option entered"));
+        .orElse(ERROR);
   }
 
 }
