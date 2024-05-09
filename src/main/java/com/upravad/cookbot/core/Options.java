@@ -1,6 +1,8 @@
 package com.upravad.cookbot.core;
 
 import static java.util.stream.Stream.of;
+
+import com.upravad.cookbot.exception.BaseException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -50,7 +52,7 @@ public enum Options {
     return of(Options.values())
         .filter(options -> options.name().equals(optionValue.substring(1).toUpperCase()))
         .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException("Invalid option entered"));
+        .orElseThrow(() -> new BaseException("Invalid option entered"));
   }
 
 }
