@@ -20,12 +20,27 @@ public class MessageSender {
    *
    * @param update from telegram
    * @param text from botService
-   * @return prepared SendPhoto for commit
+   * @return prepared SendMessage for commit
    * @see SendMessage
    */
   public SendMessage sendMessage(Update update, String text) {
     SendMessage message = new SendMessage();
     message.setChatId(update.getMessage().getChatId());
+    message.setText(text);
+    return message;
+  }
+
+  /**
+   * Send an error message.
+   *
+   * @param update from telegram
+   * @param text from botService
+   * @return prepared SendMessage for commit
+   */
+  public SendMessage errorMessage(Update update, String text) {
+    SendMessage message = new SendMessage();
+    message.setChatId(update.getMessage().getChatId());
+    message.setReplyToMessageId(update.getMessage().getMessageId());
     message.setText(text);
     return message;
   }
