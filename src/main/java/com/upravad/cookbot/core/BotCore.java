@@ -1,17 +1,20 @@
 package com.upravad.cookbot.core;
 
-import static com.upravad.cookbot.core.Options.validate;
 import static com.upravad.cookbot.exception.ExceptionMessage.NOT_EXECUTED;
+import static com.upravad.cookbot.database.enums.Category.getCommands;
+import static com.upravad.cookbot.core.Options.validate;
 
-import com.upravad.cookbot.exception.BaseException;
-import com.upravad.cookbot.service.impl.RecipeService;
-import com.upravad.cookbot.service.impl.MainOptionService;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
+import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.interfaces.Validable;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import com.upravad.cookbot.service.impl.MainOptionService;
+import com.upravad.cookbot.service.impl.RecipeService;
+import com.upravad.cookbot.exception.BaseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +40,7 @@ public class BotCore extends TelegramLongPollingBot {
     super(token);
     this.recipeService = recipeService;
     this.mainOptionService = mainOptionService;
+    commit(new SetMyCommands());
   }
 
   /**
@@ -59,12 +63,17 @@ public class BotCore extends TelegramLongPollingBot {
   @Override
   public void onUpdateReceived(Update update) {
     if (update.hasMessage() && update.getMessage().hasText()) {
-
       switch (validate(update.getMessage().getText().toLowerCase())) {
+
+        // Main commands
         case START -> commit(mainOptionService.start(update));
         case HELP -> commit(mainOptionService.help(update));
+
+        // Recipes commands
         case CREATE -> commit(recipeService.create(update), recipeService.sendLogo(update));
         case GET -> commit(recipeService.get(update));
+
+        // Exceptions
         default -> commit(mainOptionService.sendError(update));
       }
     }
@@ -89,8 +98,15 @@ public class BotCore extends TelegramLongPollingBot {
           execute(photo);
           log.info("\033[0;93m✉ photo caption ⤵\n\033[0;97m{}\033[0m", photo.getCaption());
         }
+        if (validable instanceof SetMyCommands command) {
+          command.setCommands(getCommands());
+          command.setScope(new BotCommandScopeDefault());
+          command.setLanguageCode("ru");
+          execute(command);
+          log.info("\033[0;93m✉ command method ⤵\n\033[0;97m{}\033[0m", command.getCommands());
+        }
       } catch (TelegramApiException e) {
-        throw new BaseException(e, validable.getClass().getSimpleName() + NOT_EXECUTED);
+        throw new BaseException(e, validable.getClass().getSimpleName() + " " + NOT_EXECUTED.getMessage());
       }
     }
   }
