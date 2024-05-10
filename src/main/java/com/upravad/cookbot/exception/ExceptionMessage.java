@@ -10,7 +10,7 @@ public enum ExceptionMessage {
   // General exception messages
   NOT_FOUND(" not found"),
   NOT_EXECUTED(" not executed"),
-  ERROR("И че это такое??? ахаха жми -> /help чтобы понять себя"),
+  EXCEPTION_MESSAGE("И че это такое??? ахаха жми -> /help чтобы понять себя"),
 
   // Photo exception messages
   PHOTO_SIMPLE("Simple photo not downloaded"),

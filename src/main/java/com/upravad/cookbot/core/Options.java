@@ -19,17 +19,17 @@ public enum Options {
   /**
    * User registration.
    */
-  START("/start"),
+  START("/start", "Регистрирует пользователя в базе данных"),
 
   /**
    * List of all bot commands.
    */
-  HELP("/help"),
+  HELP("/help", "Выводит список доступных команд"),
 
   /**
    * Stickers.
    */
-  STICKER("/sticker"),
+  STICKER("/sticker", "Команда-маркер для логирования отправки стикеров"),
 
 
   // Exceptions
@@ -37,7 +37,7 @@ public enum Options {
   /**
    * Error message.
    */
-  ERROR("/error"),
+  ERROR("/error", "Команда-маркер для логирования обработки ошибок"),
 
 
   // Recipe options
@@ -45,14 +45,15 @@ public enum Options {
   /**
    * Create a recipe.
    */
-  CREATE("/create"),
+  CREATE("/create", "Создает рецепт"),
 
   /**
    * Get a recipe.
    */
-  GET("/get");
+  GET("/get", "Получает рецепт");
 
   private final String name;
+  private final String description;
 
   /**
    * Validates the option.

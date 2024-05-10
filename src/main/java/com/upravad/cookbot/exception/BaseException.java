@@ -1,5 +1,7 @@
 package com.upravad.cookbot.exception;
 
+import static com.upravad.cookbot.util.Log.LOG_ERROR;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -31,10 +33,10 @@ public class BaseException extends RuntimeException {
    */
   public BaseException(Throwable throwable, String message) {
     super(message);
-    log.error("\033[1;91m" + throwable.getClass().getSimpleName() +
-              ": \033[0;97m{}\nStackTrace: {}" + "\033[0m",
-              throwable.getMessage(),
-              throwable.getStackTrace());
+    log.error(LOG_ERROR.getMessage(),
+        throwable.getClass().getSimpleName(),
+        throwable.getMessage(),
+        throwable);
   }
 
 }
