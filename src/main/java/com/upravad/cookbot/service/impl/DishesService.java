@@ -5,13 +5,13 @@ import static com.upravad.cookbot.exception.ExceptionMessage.NOT_FOUND;
 
 import com.upravad.cookbot.database.repository.IngredientRepository;
 import com.upravad.cookbot.database.repository.DishesRepository;
-import com.upravad.cookbot.service.interfaces.DishesService;
 import com.upravad.cookbot.database.mapper.IngredientMapper;
 import com.upravad.cookbot.database.mapper.DishesMapper;
-import com.upravad.cookbot.exception.BaseException;
 import com.upravad.cookbot.database.model.Ingredient;
 import com.upravad.cookbot.database.model.Dish;
 import com.upravad.cookbot.database.dto.DishDto;
+import com.upravad.cookbot.exception.BaseException;
+import com.upravad.cookbot.service.interfaces.PostgresService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.Set;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DishesServiceImpl implements DishesService {
+public class DishesService implements PostgresService<UUID, DishDto> {
 
   private final DishesRepository dishesRepository;
   private final IngredientRepository ingredientRepository;

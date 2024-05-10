@@ -44,10 +44,10 @@ public class BotConfiguration {
       TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
       BotSession session = botsApi.registerBot(botCore);
       isRunning = session.isRunning();
-      log.info("\uD83D\uDCF6 \033[1;94m{} registered: \033[0;97m{}\033[0m", botCore.getBotUsername(), session.isRunning());
+      log.info("\uD83D\uDCF6 \033[1;94m{} registered: \033[0;97m{}\033[0m",
+          botCore.getBotUsername(), isRunning);
 
     } catch (TelegramApiException e) {
-      log.error("\033[1;91m{}: \033[0;97m{}\033[0m", e.getClass().getSimpleName(), e.getMessage());
       throw new BaseException(e, "Failed to register bot");
     }
   }
