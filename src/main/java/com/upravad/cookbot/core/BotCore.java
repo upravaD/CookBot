@@ -64,6 +64,10 @@ public class BotCore extends TelegramLongPollingBot {
     return username;
   }
 
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
   /**
    * This method is called when receiving updates via GetUpdates method.
    *

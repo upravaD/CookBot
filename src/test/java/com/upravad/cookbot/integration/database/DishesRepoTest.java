@@ -4,13 +4,12 @@ import static com.upravad.cookbot.database.enums.Category.BREAKFAST;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.upravad.cookbot.database.repository.IngredientRepository;
 import com.upravad.cookbot.database.repository.DishesRepository;
-import com.upravad.cookbot.config.ContainerConfiguration;
 import com.upravad.cookbot.database.model.Ingredient;
 import com.upravad.cookbot.database.model.Dish;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import com.upravad.cookbot.config.CookBotTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
@@ -20,7 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
-@SpringBootTest(classes = {ContainerConfiguration.class})
+@CookBotTest
 class DishesRepoTest {
 
   @Autowired
