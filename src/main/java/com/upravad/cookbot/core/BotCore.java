@@ -1,33 +1,33 @@
 package com.upravad.cookbot.core;
 
-import static com.upravad.cookbot.exception.ExceptionMessage.NOT_EXECUTED;
-import static com.upravad.cookbot.database.enums.Category.getCommands;
 import static com.upravad.cookbot.core.Options.validate;
+import static com.upravad.cookbot.database.enums.Category.getCommands;
+import static com.upravad.cookbot.exception.ExceptionMessage.NOT_EXECUTED;
 
+import com.upravad.cookbot.exception.BaseException;
+import com.upravad.cookbot.service.impl.MainOptionService;
+import com.upravad.cookbot.service.impl.RecipeService;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.interfaces.Validable;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.interfaces.Validable;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import com.upravad.cookbot.service.impl.MainOptionService;
-import com.upravad.cookbot.service.impl.RecipeService;
-import com.upravad.cookbot.exception.BaseException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import lombok.extern.slf4j.Slf4j;
+import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 /**
- * {@code BotCore} the main processor of the bot and
- * this class is responsible for processing incoming updates from {@code Telegram}.
+ * {@code BotCore} the main processor of the bot and this class is responsible for processing incoming updates from
+ * {@code Telegram}.
  *
  * @author daktah
  */
@@ -68,6 +68,7 @@ public class BotCore extends TelegramLongPollingBot {
    */
   @Override
   public void onUpdateReceived(Update update) {
+
     if (update.hasMessage() && update.getMessage().hasText()) {
       switch (validate(update.getMessage().getText().toLowerCase())) {
 
@@ -86,14 +87,7 @@ public class BotCore extends TelegramLongPollingBot {
       }
     }
 
-//    buttonTap(
-//        update.getMessage().getChatId(),
-//        update.getCallbackQuery().getId(),
-//        update.getMessage().getText().toLowerCase(),
-//        update.getMessage().getMessageId()
-//    );
-
-    if (update.getMessage().getText().equals("Овсянка с яблоками")) commit(recipeService.get(update));
+    if (update.hasCallbackQuery()) commit(recipeService.get(update.getCallbackQuery()));
 
     if (update.getMessage().hasSticker()) commit(mainOptionService.sendSticker(update));
   }
@@ -110,10 +104,12 @@ public class BotCore extends TelegramLongPollingBot {
         if (validable instanceof SendMessage message) {
           execute(message);
           log.info("\033[0;93m✉ answer text ⤵\n\033[0;97m{}\033[0m", message.getText());
+
         }
         if (validable instanceof SendPhoto photo) {
           execute(photo);
           log.info("\033[0;93m✉ photo caption ⤵\n\033[0;97m{}\033[0m", photo.getCaption());
+
         }
         if (validable instanceof SetMyCommands command) {
           command.setCommands(getCommands());
@@ -132,20 +128,20 @@ public class BotCore extends TelegramLongPollingBot {
 
     EditMessageText newTxt = EditMessageText.builder()
         .chatId(id.toString())
-        .messageId(msgId).text("").build();
+        .messageId(msgId).text("Овсянка с яблоками").build();
 
     EditMessageReplyMarkup newKb = EditMessageReplyMarkup.builder()
         .chatId(id.toString()).messageId(msgId).build();
 
-    if(data.equals("next")) {
+    if (data.equals("next")) {
       newTxt.setText("MENU 2");
       newKb.setReplyMarkup(InlineKeyboardMarkup.builder()
           .keyboardRow(List.of(InlineKeyboardButton.builder().text("2").build()))
           .build());
-    } else if(data.equals("back")) {
+    } else if (data.equals("back")) {
       newTxt.setText("MENU 1");
       newKb.setReplyMarkup(InlineKeyboardMarkup.builder()
-              .keyboardRow(List.of(InlineKeyboardButton.builder().text("1").build()))
+          .keyboardRow(List.of(InlineKeyboardButton.builder().text("1").build()))
           .build());
     }
 

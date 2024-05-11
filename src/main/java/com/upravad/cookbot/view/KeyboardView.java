@@ -1,19 +1,15 @@
 package com.upravad.cookbot.view;
 
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import org.springframework.stereotype.Component;
 import com.upravad.cookbot.core.Options;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
-@Slf4j
 @Component
-@RequiredArgsConstructor
 public class KeyboardView implements View {
 
   public ReplyKeyboard getKeyboardMarkup() {

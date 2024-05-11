@@ -25,16 +25,16 @@ public class PhotoSender {
   /**
    * Send a simple photo.
    *
-   * @param update from telegram
+   * @param chatId from telegram
    * @param url from dishes
    * @return prepared SendPhoto for commit
    * @see SendPhoto
    * @see InputFile
    */
-  public SendPhoto sendPhoto(Update update, String url) {
+  public SendPhoto sendPhoto(Long chatId, String url) {
     try {
       SendPhoto photo = new SendPhoto();
-      photo.setChatId(update.getMessage().getChatId());
+      photo.setChatId(chatId);
       photo.setPhoto(new InputFile(new URL(url).openStream(), url));
       return photo;
 
@@ -46,17 +46,17 @@ public class PhotoSender {
   /**
    * Send a photo with the caption.
    *
-   * @param update from telegram
+   * @param chatId from telegram
    * @param url from dishes
    * @param caption from dishes
    * @return prepared SendPhoto for commit
    * @see SendPhoto
    * @see InputFile
    */
-  public SendPhoto sendPhoto(Update update, String url, String caption) {
+  public SendPhoto sendPhoto(Long chatId, String url, String caption) {
     try {
       SendPhoto photo = new SendPhoto();
-      photo.setChatId(update.getMessage().getChatId());
+      photo.setChatId(chatId);
       photo.setCaption(caption);
       photo.setPhoto(new InputFile(new URL(url).openStream(), url));
       return photo;
