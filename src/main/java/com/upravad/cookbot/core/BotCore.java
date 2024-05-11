@@ -4,7 +4,13 @@ import static com.upravad.cookbot.exception.ExceptionMessage.NOT_EXECUTED;
 import static com.upravad.cookbot.database.enums.Category.getCommands;
 import static com.upravad.cookbot.core.Options.validate;
 
+import java.util.List;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -66,17 +72,28 @@ public class BotCore extends TelegramLongPollingBot {
       switch (validate(update.getMessage().getText().toLowerCase())) {
 
         // Main commands
-        case START -> commit(mainOptionService.start(update));
+        case START -> commit(recipeService.sendLogo(update), mainOptionService.start(update));
         case HELP -> commit(mainOptionService.help(update));
+
+        // Category commands
+        case BREAKFAST -> commit(recipeService.sendBreakfast(update));
 
         // Recipes commands
         case CREATE -> commit(recipeService.create(update), recipeService.sendLogo(update));
         case GET -> commit(recipeService.get(update));
 
-        // Exceptions
-        default -> commit(mainOptionService.sendError(update));
+        default -> log.trace(update.getMessage().getText().toLowerCase());
       }
     }
+
+//    buttonTap(
+//        update.getMessage().getChatId(),
+//        update.getCallbackQuery().getId(),
+//        update.getMessage().getText().toLowerCase(),
+//        update.getMessage().getMessageId()
+//    );
+
+    if (update.getMessage().getText().equals("Овсянка с яблоками")) commit(recipeService.get(update));
 
     if (update.getMessage().hasSticker()) commit(mainOptionService.sendSticker(update));
   }
@@ -103,7 +120,7 @@ public class BotCore extends TelegramLongPollingBot {
           command.setScope(new BotCommandScopeDefault());
           command.setLanguageCode("ru");
           execute(command);
-          log.info("\033[0;93m✉ command method ⤵\n\033[0;97m{}\033[0m", command.getCommands());
+          log.info("\033[0;93m✉ commands list ⤵\n\033[0;97m{}\033[0m", command.getCommands());
         }
       } catch (TelegramApiException e) {
         throw new BaseException(e, validable.getClass().getSimpleName() + " " + NOT_EXECUTED.getMessage());
@@ -111,4 +128,32 @@ public class BotCore extends TelegramLongPollingBot {
     }
   }
 
+  private void buttonTap(Long id, String queryId, String data, int msgId) {
+
+    EditMessageText newTxt = EditMessageText.builder()
+        .chatId(id.toString())
+        .messageId(msgId).text("").build();
+
+    EditMessageReplyMarkup newKb = EditMessageReplyMarkup.builder()
+        .chatId(id.toString()).messageId(msgId).build();
+
+    if(data.equals("next")) {
+      newTxt.setText("MENU 2");
+      newKb.setReplyMarkup(InlineKeyboardMarkup.builder()
+          .keyboardRow(List.of(InlineKeyboardButton.builder().text("2").build()))
+          .build());
+    } else if(data.equals("back")) {
+      newTxt.setText("MENU 1");
+      newKb.setReplyMarkup(InlineKeyboardMarkup.builder()
+              .keyboardRow(List.of(InlineKeyboardButton.builder().text("1").build()))
+          .build());
+    }
+
+    AnswerCallbackQuery close = AnswerCallbackQuery.builder()
+        .callbackQueryId(queryId).build();
+
+    commit(close);
+    commit(newTxt);
+    commit(newKb);
+  }
 }

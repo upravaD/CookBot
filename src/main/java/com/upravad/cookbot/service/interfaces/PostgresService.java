@@ -1,5 +1,7 @@
 package com.upravad.cookbot.service.interfaces;
 
+import java.util.List;
+
 /**
  * This class provides functionality for working with a {@code Postgres} database.
  *
@@ -10,7 +12,7 @@ public interface PostgresService<I, D> {
 
   void create(D dto);
   D read(I id);
-  D readByName(String name);
+  List<D> readAll();
   void update(D dto);
   void delete(I id);
 

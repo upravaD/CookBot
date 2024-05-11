@@ -19,17 +19,17 @@ public enum Options {
   /**
    * User registration.
    */
-  START("/start", "Регистрирует пользователя в базе данных"),
+  START("Регистрирует пользователя в базе данных"),
 
   /**
    * List of all bot commands.
    */
-  HELP("/help", "Выводит список доступных команд"),
+  HELP("Выводит список доступных команд"),
 
   /**
    * Stickers.
    */
-  STICKER("/sticker", "Команда-маркер для логирования отправки стикеров"),
+  STICKER("Команда-маркер для логирования отправки стикеров"),
 
 
   // Exceptions
@@ -37,22 +37,27 @@ public enum Options {
   /**
    * Error message.
    */
-  ERROR("/error", "Команда-маркер для логирования обработки ошибок"),
+  ERROR("Команда-маркер для логирования обработки ошибок"),
 
+
+  // Category options
+  /**
+   * Create a recipe.
+   */
+  BREAKFAST("Открывает клавиши для завтраков"),
 
   // Recipe options
 
   /**
    * Create a recipe.
    */
-  CREATE("/create", "Создает рецепт"),
+  CREATE("Создает рецепт"),
 
   /**
    * Get a recipe.
    */
-  GET("/get", "Получает рецепт");
+  GET("Получает рецепт");
 
-  private final String name;
   private final String description;
 
   /**
@@ -68,4 +73,7 @@ public enum Options {
         .orElse(ERROR);
   }
 
+  public static String getCommand(Options option) {
+    return "/" + option.name().toLowerCase();
+  }
 }
