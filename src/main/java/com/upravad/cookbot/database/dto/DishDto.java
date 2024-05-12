@@ -36,8 +36,4 @@ public class DishDto implements Serializable {
            " }\n";
   }
 
-  public String description() {
-    return "Ингредиенты: " + ingredients +
-           ", \nСтоимость: " + price + " ₽\n";
-  }
 }

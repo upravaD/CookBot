@@ -8,7 +8,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum Color {
+public enum ColorUtil {
 
     RESET("\033[0m"),
 
@@ -96,6 +96,6 @@ public enum Color {
     CYAN_BACKGROUND_BRIGHT("\033[0;106m"),      // CYAN
     WHITE_BACKGROUND_BRIGHT("\033[0;107m");     // WHITE
 
-    private final String code;
+    private final String color;
 
 }

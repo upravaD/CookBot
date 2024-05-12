@@ -1,13 +1,17 @@
 package com.upravad.cookbot.core;
 
-import static com.upravad.cookbot.core.Options.validate;
 import static com.upravad.cookbot.database.enums.Category.getCommands;
 import static com.upravad.cookbot.exception.ExceptionMessage.NOT_EXECUTED;
+import static com.upravad.cookbot.util.RegexUtil.UUID;
 
+import com.upravad.cookbot.database.enums.Category;
 import com.upravad.cookbot.exception.BaseException;
 import com.upravad.cookbot.service.impl.MainOptionService;
 import com.upravad.cookbot.service.impl.RecipeService;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -70,26 +74,50 @@ public class BotCore extends TelegramLongPollingBot {
   public void onUpdateReceived(Update update) {
 
     if (update.hasMessage() && update.getMessage().hasText()) {
-      switch (validate(update.getMessage().getText().toLowerCase())) {
 
-        // Main commands
-        case START -> commit(recipeService.sendLogo(update), mainOptionService.start(update));
-        case HELP -> commit(mainOptionService.help(update));
+      Set<Options> options = getOptionsSet();
 
-        // Category commands
-        case BREAKFAST -> commit(recipeService.sendBreakfast(update));
+      options.stream()
+          .filter(MainOptions.class::isInstance)
+          .map(MainOptions.class::cast)
+          .filter(option -> update.getMessage().getText().equals(option.getCommand()))
+          .findFirst()
+          .ifPresent(option -> {
+            switch (option) {
 
-        // Recipes commands
-        case CREATE -> commit(recipeService.create(update), recipeService.sendLogo(update));
-        case GET -> commit(recipeService.get(update));
+              // Main commands
+              case START -> commit(mainOptionService.sendLogo(update), mainOptionService.start(update));
+              case HELP -> commit(mainOptionService.help(update));
 
-        default -> log.trace(update.getMessage().getText().toLowerCase());
-      }
+              // Recipes commands
+              case CREATE -> commit(recipeService.create(update));
+
+              default -> log.info(update.getMessage().getText().toLowerCase());
+            }
+          });
+
+      options.stream()
+          .filter(Category.class::isInstance)
+          .map(Category.class::cast)
+          .filter(option -> update.getMessage().getText().equals(option.getCommand()))
+          .findFirst()
+          .ifPresent(option -> commit(recipeService.sendCategories(update, option)));
     }
 
-    if (update.hasCallbackQuery()) commit(recipeService.get(update.getCallbackQuery()));
+    if (update.hasCallbackQuery() && update.getCallbackQuery().getData().matches(UUID.getRegex())) {
+      commit(recipeService.sendRecipe(update.getCallbackQuery()));
+    }
 
-    if (update.getMessage().hasSticker()) commit(mainOptionService.sendSticker(update));
+    if (update.hasMessage() && update.getMessage().hasSticker()) {
+      commit(mainOptionService.sendSticker(update));
+    }
+  }
+
+  private Set<Options> getOptionsSet() {
+    Set<Options> options = new HashSet<>();
+    options.addAll(Arrays.asList(MainOptions.values()));
+    options.addAll(Arrays.asList(Category.values()));
+    return options;
   }
 
   /**
@@ -119,19 +147,22 @@ public class BotCore extends TelegramLongPollingBot {
           log.info("\033[0;93m✉ commands list ⤵\n\033[0;97m{}\033[0m", command.getCommands());
         }
       } catch (TelegramApiException e) {
-        throw new BaseException(e, validable.getClass().getSimpleName() + " " + NOT_EXECUTED.getMessage());
+        throw new BaseException(e, validable.getClass().getSimpleName() + NOT_EXECUTED.getMessage());
       }
     }
   }
 
-  private void buttonTap(Long id, String queryId, String data, int msgId) {
+  //TODO: Пролистование кнопок
+  private void buttonTap(Long id, String callbackId, String data, int msgId) {
 
     EditMessageText newTxt = EditMessageText.builder()
         .chatId(id.toString())
-        .messageId(msgId).text("Овсянка с яблоками").build();
+        .messageId(msgId)
+        .text("").build();
 
     EditMessageReplyMarkup newKb = EditMessageReplyMarkup.builder()
-        .chatId(id.toString()).messageId(msgId).build();
+        .chatId(id.toString())
+        .messageId(msgId).build();
 
     if (data.equals("next")) {
       newTxt.setText("MENU 2");
@@ -146,7 +177,7 @@ public class BotCore extends TelegramLongPollingBot {
     }
 
     AnswerCallbackQuery close = AnswerCallbackQuery.builder()
-        .callbackQueryId(queryId).build();
+        .callbackQueryId(callbackId).build();
 
     commit(close);
     commit(newTxt);

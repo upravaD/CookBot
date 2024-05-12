@@ -4,7 +4,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.springframework.stereotype.Component;
-import com.upravad.cookbot.core.Options;
+import com.upravad.cookbot.core.MainOptions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,11 +27,10 @@ public class KeyboardView implements View {
 
   private KeyboardRow getOptionsKeyboardRow() {
     KeyboardRow row = new KeyboardRow();
-    Arrays.stream(Options.values()).toList().stream()
-        .filter(option -> !option.name().equals(Options.ERROR.name()))
-        .filter(option -> !option.name().equals(Options.STICKER.name()))
-        .filter(option -> !option.name().equals(Options.BREAKFAST.name()))
-        .forEach(option -> row.add(Options.getCommand(option)));
+    Arrays.stream(MainOptions.values()).toList().stream()
+        .filter(option -> !option.name().equals(MainOptions.ERROR.name()))
+        .filter(option -> !option.name().equals(MainOptions.STICKER.name()))
+        .forEach(option -> row.add(option.getCommand()));
     return row;
   }
 

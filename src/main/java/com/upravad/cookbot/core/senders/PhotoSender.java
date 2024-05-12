@@ -5,16 +5,15 @@ import static com.upravad.cookbot.exception.ExceptionMessage.PHOTO_SIMPLE;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import com.upravad.cookbot.exception.BaseException;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URL;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 /**
  * Processing photo sending.
  *
- * @see Update
  * @see SendPhoto
  * @author daktah
  * @version 1.0.0
@@ -28,7 +27,6 @@ public class PhotoSender {
    * @param chatId from telegram
    * @param url from dishes
    * @return prepared SendPhoto for commit
-   * @see SendPhoto
    * @see InputFile
    */
   public SendPhoto sendPhoto(Long chatId, String url) {
@@ -50,15 +48,16 @@ public class PhotoSender {
    * @param url from dishes
    * @param caption from dishes
    * @return prepared SendPhoto for commit
-   * @see SendPhoto
+   * @see InlineKeyboardMarkup
    * @see InputFile
    */
-  public SendPhoto sendPhoto(Long chatId, String url, String caption) {
+  public SendPhoto sendPhoto(Long chatId, String url, String caption, InlineKeyboardMarkup markup) {
     try {
       SendPhoto photo = new SendPhoto();
       photo.setChatId(chatId);
       photo.setCaption(caption);
       photo.setPhoto(new InputFile(new URL(url).openStream(), url));
+      photo.setReplyMarkup(markup);
       return photo;
 
     } catch (IOException e) {

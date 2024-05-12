@@ -71,7 +71,7 @@ public class DishesService implements PostgresService<UUID, DishDto> {
   }
 
   public List<DishDto> readAllByCategory(Category category) {
-    log.info("\033[1;94mReading all dishes by name\033[0m");
+    log.info("\033[1;94mReading all dishes by category: \033[0;97m{}\033[0m", category);
     return dishesRepository.findAllByCategory(category).stream()
         .map(dishesMapper::toDto)
         .toList();
