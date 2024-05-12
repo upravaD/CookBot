@@ -5,6 +5,7 @@ import static com.upravad.cookbot.util.LogUtil.OPTION;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import com.upravad.cookbot.service.interfaces.BotService;
@@ -42,7 +43,7 @@ public class RecipeService implements BotService {
   /**
    * Prepare a message with all the dishes of the category.
    *
-   * @param update from telegram
+   * @param update   from telegram
    * @param category of dishes
    * @return a SendMessage
    * @see DishesService
@@ -60,8 +61,7 @@ public class RecipeService implements BotService {
   }
 
   /**
-   * Prepare a photo with the recipe of the dish in the caption
-   * and inline buttons in a message.
+   * Prepare a photo with the recipe of the dish in the caption and inline buttons in a message.
    *
    * @param callback from telegram
    * @return a SendPhoto
@@ -70,14 +70,34 @@ public class RecipeService implements BotService {
    * @see ButtonsView
    */
   public SendPhoto sendRecipe(CallbackQuery callback) {
-    log.info(OPTION.getLog(), "/" + callback.getClass().getSimpleName().toLowerCase().substring(0, 8), callback.getFrom());
+    log.info(OPTION.getLog(), "/callback", callback.getData());
     DishDto dto = dishesService.read(UUID.fromString(callback.getData()));
     return photoSender.sendPhoto(
         callback.getMessage().getChatId(),
         dto.getImageUrl(),
-        dto.getRecipe(),
-        buttonsView.getPhotoButtons(dto)
+        dto.getName() + "\n\n" + dto.getRecipe(),
+        buttonsView.getWeightButtons(callback.getData())
     );
+  }
+
+  public EditMessageReplyMarkup sendBackToWeight(CallbackQuery callback) {
+    log.info(OPTION.getLog(), "/back", callback.getData());
+    callback.setData(callback.getData().substring(7));
+    return EditMessageReplyMarkup.builder()
+        .chatId(callback.getMessage().getChatId().toString())
+        .messageId(callback.getMessage().getMessageId())
+        .replyMarkup(buttonsView.getWeightButtons(callback.getData()))
+        .build();
+  }
+
+  public EditMessageReplyMarkup sendButtonTap(CallbackQuery callback) {
+    log.info(OPTION.getLog(), "/tap", callback);
+    log.info(callback.getData());
+    return buttonsView.getPhotoButtonsTap(
+        dishesService.read(UUID.fromString(callback.getData().substring(2))),
+        callback.getMessage().getChatId().toString(),
+        callback.getMessage().getMessageId(),
+        Integer.parseInt(callback.getData().substring(1, 2)));
   }
 
   //TODO Создание рецептов

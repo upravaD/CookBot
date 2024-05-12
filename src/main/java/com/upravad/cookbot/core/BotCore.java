@@ -4,9 +4,7 @@ import static com.upravad.cookbot.exception.ExceptionMessage.NOT_EXECUTED;
 import static com.upravad.cookbot.database.enums.Category.getCommands;
 import static com.upravad.cookbot.util.RegexUtil.UUID;
 
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -28,7 +26,6 @@ import com.upravad.cookbot.core.options.Options;
 import lombok.extern.slf4j.Slf4j;
 import java.util.HashSet;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -114,11 +111,31 @@ public class BotCore extends TelegramLongPollingBot {
       commit(recipeService.sendRecipe(update.getCallbackQuery()));
     }
 
+    if (update.hasCallbackQuery() && update.getCallbackQuery().getData().startsWith("w")) {
+      commit(AnswerCallbackQuery.builder()
+          .callbackQueryId(update.getCallbackQuery().getId())
+          .build());
+      commit(recipeService.sendButtonTap(update.getCallbackQuery()));
+    }
+
+    if (update.hasCallbackQuery() && update.getCallbackQuery().getData().startsWith("back/")) {
+      log.info(update.getCallbackQuery().getData());
+      commit(AnswerCallbackQuery.builder()
+          .callbackQueryId(update.getCallbackQuery().getId())
+          .build());
+      commit(recipeService.sendBackToWeight(update.getCallbackQuery()));
+    }
+
     if (update.hasMessage() && update.getMessage().hasSticker()) {
       commit(mainOptionService.sendSticker(update));
     }
   }
 
+  /**
+   * The method makes options set.
+   *
+   * @return a set of {@code Options}
+   */
   private Set<Options> getOptionsSet() {
     Set<Options> options = new HashSet<>();
     options.addAll(Arrays.asList(MainOptions.values()));
@@ -156,41 +173,25 @@ public class BotCore extends TelegramLongPollingBot {
           execute(command);
           log.info("\033[0;93m✉ commands list ⤵\n\033[0;97m{}\033[0m", command.getCommands());
         }
+        if (validable instanceof AnswerCallbackQuery callbackQuery) {
+          execute(callbackQuery);
+          log.info("\033[0;93m✉ callback ⤵\n\033[0;97m{}\033[0m", callbackQuery);
+
+        }
+        if (validable instanceof EditMessageText editMsg) {
+          execute(editMsg);
+          log.info("\033[0;93m✉ edit message ⤵\n\033[0;97m{}\033[0m", editMsg);
+
+        }
+        if (validable instanceof EditMessageReplyMarkup markup) {
+          execute(markup);
+          log.info("\033[0;93m✉ edit markup ⤵\n\033[0;97m{}\033[0m", markup);
+
+        }
       } catch (TelegramApiException e) {
         throw new BaseException(e, validable.getClass().getSimpleName() + NOT_EXECUTED.getMessage());
       }
     }
   }
 
-  //TODO: Пролистование кнопок
-  private void buttonTap(Long id, String callbackId, String data, int msgId) {
-
-    EditMessageText newTxt = EditMessageText.builder()
-        .chatId(id.toString())
-        .messageId(msgId)
-        .text("").build();
-
-    EditMessageReplyMarkup newKb = EditMessageReplyMarkup.builder()
-        .chatId(id.toString())
-        .messageId(msgId).build();
-
-    if (data.equals("next")) {
-      newTxt.setText("MENU 2");
-      newKb.setReplyMarkup(InlineKeyboardMarkup.builder()
-          .keyboardRow(List.of(InlineKeyboardButton.builder().text("2").build()))
-          .build());
-    } else if (data.equals("back")) {
-      newTxt.setText("MENU 1");
-      newKb.setReplyMarkup(InlineKeyboardMarkup.builder()
-          .keyboardRow(List.of(InlineKeyboardButton.builder().text("1").build()))
-          .build());
-    }
-
-    AnswerCallbackQuery close = AnswerCallbackQuery.builder()
-        .callbackQueryId(callbackId).build();
-
-    commit(close);
-    commit(newTxt);
-    commit(newKb);
-  }
 }
