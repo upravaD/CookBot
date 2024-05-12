@@ -1,4 +1,4 @@
-package com.upravad.cookbot.core;
+package com.upravad.cookbot.core.options;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

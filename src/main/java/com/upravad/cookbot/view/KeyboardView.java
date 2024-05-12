@@ -4,7 +4,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.springframework.stereotype.Component;
-import com.upravad.cookbot.core.MainOptions;
+import com.upravad.cookbot.core.options.MainOptions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

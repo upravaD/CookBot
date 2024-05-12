@@ -1,10 +1,10 @@
 package com.upravad.cookbot.service.impl;
 
 import static com.upravad.cookbot.exception.ExceptionMessage.EXCEPTION_MESSAGE;
-import static com.upravad.cookbot.core.MainOptions.STICKER;
-import static com.upravad.cookbot.core.MainOptions.ERROR;
-import static com.upravad.cookbot.core.MainOptions.START;
-import static com.upravad.cookbot.core.MainOptions.HELP;
+import static com.upravad.cookbot.core.options.MainOptions.STICKER;
+import static com.upravad.cookbot.core.options.MainOptions.ERROR;
+import static com.upravad.cookbot.core.options.MainOptions.START;
+import static com.upravad.cookbot.core.options.MainOptions.HELP;
 import static com.upravad.cookbot.util.LogUtil.LOG_ERROR;
 import static com.upravad.cookbot.util.LogUtil.OPTION;
 
@@ -13,7 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import com.upravad.cookbot.service.interfaces.BotService;
 import com.upravad.cookbot.core.senders.MessageSender;
 import com.upravad.cookbot.view.KeyboardView;
-import com.upravad.cookbot.core.MainOptions;
+import com.upravad.cookbot.core.options.MainOptions;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

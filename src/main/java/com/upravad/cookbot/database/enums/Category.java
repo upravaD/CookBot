@@ -3,7 +3,7 @@ package com.upravad.cookbot.database.enums;
 import static java.util.Arrays.stream;
 
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
-import com.upravad.cookbot.core.Options;
+import com.upravad.cookbot.core.options.Options;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import java.util.List;

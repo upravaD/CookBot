@@ -1,4 +1,4 @@
-package com.upravad.cookbot.core;
+package com.upravad.cookbot.core.options;
 
 public interface Options {
 

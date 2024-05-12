@@ -1,39 +1,47 @@
 package com.upravad.cookbot.core;
 
-import static com.upravad.cookbot.database.enums.Category.getCommands;
 import static com.upravad.cookbot.exception.ExceptionMessage.NOT_EXECUTED;
+import static com.upravad.cookbot.database.enums.Category.getCommands;
 import static com.upravad.cookbot.util.RegexUtil.UUID;
 
-import com.upravad.cookbot.database.enums.Category;
-import com.upravad.cookbot.exception.BaseException;
-import com.upravad.cookbot.service.impl.MainOptionService;
-import com.upravad.cookbot.service.impl.RecipeService;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.interfaces.Validable;
-import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
-import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.interfaces.Validable;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import com.upravad.cookbot.service.impl.MainOptionService;
+import com.upravad.cookbot.service.impl.RecipeService;
+import com.upravad.cookbot.core.options.MainOptions;
+import com.upravad.cookbot.database.enums.Category;
+import com.upravad.cookbot.exception.BaseException;
+import com.upravad.cookbot.core.options.Options;
+import lombok.extern.slf4j.Slf4j;
+import java.util.HashSet;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /**
- * {@code BotCore} the main processor of the bot and this class is responsible for processing incoming updates from
- * {@code Telegram}.
+ * {@code BotCore} the main processor of the bot
+ * and this class is responsible for
+ * processing incoming updates from {@code Telegram}.
+ *
+ * @see TelegramLongPollingBot
+ * @see MainOptionService
+ * @see RecipeService
  *
  * @author daktah
+ * @version 1.0
  */
 @Slf4j
 @Component
@@ -69,6 +77,9 @@ public class BotCore extends TelegramLongPollingBot {
    * This method is called when receiving updates via GetUpdates method.
    *
    * @param update Update received
+   *
+   * @see Options
+   * @see Update
    */
   @Override
   public void onUpdateReceived(Update update) {
@@ -84,14 +95,9 @@ public class BotCore extends TelegramLongPollingBot {
           .findFirst()
           .ifPresent(option -> {
             switch (option) {
-
-              // Main commands
               case START -> commit(mainOptionService.sendLogo(update), mainOptionService.start(update));
               case HELP -> commit(mainOptionService.help(update));
-
-              // Recipes commands
               case CREATE -> commit(recipeService.create(update));
-
               default -> log.info(update.getMessage().getText().toLowerCase());
             }
           });
@@ -124,6 +130,10 @@ public class BotCore extends TelegramLongPollingBot {
    * The method validates the delivery type and executes it.
    *
    * @param validables from any Sender
+   *
+   * @see SetMyCommands
+   * @see SendMessage
+   * @see SendPhoto
    */
   private void commit(Validable... validables) {
     for (Validable validable : validables) {

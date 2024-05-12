@@ -1,6 +1,6 @@
 package com.upravad.cookbot.service.impl;
 
-import static com.upravad.cookbot.core.MainOptions.CREATE;
+import static com.upravad.cookbot.core.options.MainOptions.CREATE;
 import static com.upravad.cookbot.util.LogUtil.OPTION;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
