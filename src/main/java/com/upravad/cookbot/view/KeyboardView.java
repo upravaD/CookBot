@@ -21,7 +21,9 @@ public class KeyboardView implements View {
 
   private List<KeyboardRow> getRowList() {
     List<KeyboardRow> keyboardRows = new ArrayList<>();
-    keyboardRows.add(getOptionsKeyboardRow());
+    for (int i = 0; i < 30; i++) {
+      keyboardRows.add(getOptionsKeyboardRow());
+    }
     return keyboardRows;
   }
 
