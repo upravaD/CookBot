@@ -3,10 +3,10 @@ package com.upravad.cookbot.service.interfaces;
 import java.util.List;
 
 /**
- * This class provides functionality for working with a {@code Postgres} database.
+ * This interface provides functionality for working with a {@code Postgres} database.
  *
  * @param <I> The type of the identifier
- * @param <D> The type of the DTO object
+ * @param <D> The type of the entity
  */
 public interface PostgresService<I, D> {
 
