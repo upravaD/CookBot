@@ -33,14 +33,14 @@ public class MainOptionService implements BotService {
   }
 
   public SendMessage start(Update update) {
-    log.info(OPTION.getLog(), START.getCommand(), update.getMessage().getFrom());
+    log.info(OPTION.getLog(), START.getCommand().substring(1), update.getMessage().getFrom());
     return messageSender.sendMessage(update,
         "Добро пожаловать в CookBot!",
         keyboardView.getKeyboardMarkup());
   }
 
   public SendMessage help(Update update) {
-    log.info(OPTION.getLog(), HELP.getCommand(), update.getMessage().getFrom());
+    log.info(OPTION.getLog(), HELP.getCommand().substring(1), update.getMessage().getFrom());
     StringBuilder sb = new StringBuilder();
     AtomicInteger i = new AtomicInteger(1);
 
@@ -58,7 +58,7 @@ public class MainOptionService implements BotService {
     return messageSender.sendMessage(update, sb.toString());
   }
   public SendMessage sendSticker(Update update) {
-    log.info(OPTION.getLog(), STICKER.getCommand(), update.getMessage().getFrom());
+    log.info(OPTION.getLog(), STICKER.getCommand().substring(1), update.getMessage().getFrom());
     return messageSender.sendMessage(update, update.getMessage().getSticker().getEmoji());
   }
 

@@ -70,7 +70,7 @@ public class ButtonsView implements View {
   private List<List<InlineKeyboardButton>> getPhotoRows(DishDto dish, Integer multiplier) {
     List<List<InlineKeyboardButton>> rows = new ArrayList<>();
     rows.add(getRow("назад", "back/" + multiplier +"/" + dish.getId().toString()));
-    rows.add(getRow("Ингредиенты: ", "ingredients"));
+    rows.add(getRow("Ингредиенты: ", "header/ingredients"));
     dish.getIngredients().forEach(ingredient -> rows.add(getIngredientRow(ingredient, multiplier)));
     rows.add(getCostRow(dish, multiplier));
     rows.add(getOrderRow());
@@ -79,10 +79,10 @@ public class ButtonsView implements View {
 
   private List<List<InlineKeyboardButton>> getWeightRows(String data) {
     List<List<InlineKeyboardButton>> rows = new ArrayList<>();
-    rows.add(getRow("Выберите объем готового блюда: ", "weight"));
-    rows.add(getRow("1.5 литра", "w1" + data));
-    rows.add(getRow("4 литра", "w2" + data));
-    rows.add(getRow("6.5 литров", "w3" + data));
+    rows.add(getRow("Выберите объем готового блюда: ", "header/weight"));
+    rows.add(getRow("1.5 литра", "weight/1/" + data));
+    rows.add(getRow("4 литра", "weight/2/" + data));
+    rows.add(getRow("6.5 литров", "weight/3/" + data));
     return rows;
   }
 

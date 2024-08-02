@@ -43,7 +43,7 @@ public class RecipeService implements BotService {
   /**
    * Prepare a message with all the dishes of the category.
    *
-   * @param update   from telegram
+   * @param update from telegram
    * @param category of dishes
    * @return a SendMessage
    * @see DishesService
@@ -51,7 +51,7 @@ public class RecipeService implements BotService {
    * @see Update
    */
   public SendMessage sendCategories(Update update, Category category) {
-    log.info(OPTION.getLog(), category.getCommand(), update.getMessage().getFrom());
+    log.info(OPTION.getLog(), category.getCommand().substring(1), update.getMessage().getFrom());
     List<DishDto> dishes = dishesService.readAllByCategory(category);
     return messageSender.sendMessage(
         update,
@@ -70,7 +70,7 @@ public class RecipeService implements BotService {
    * @see ButtonsView
    */
   public SendPhoto sendRecipe(CallbackQuery callback) {
-    log.info(OPTION.getLog(), "/callback", callback.getData());
+    log.info(OPTION.getLog(), "callback", callback.getFrom());
     DishDto dto = dishesService.read(UUID.fromString(callback.getData()));
     return photoSender.sendPhoto(
         callback.getMessage().getChatId(),
@@ -81,8 +81,9 @@ public class RecipeService implements BotService {
   }
 
   public EditMessageReplyMarkup sendBackToWeight(CallbackQuery callback) {
-    log.info(OPTION.getLog(), "/back", callback.getData());
-    callback.setData(callback.getData().substring(7));
+    String[] split = callback.getData().split("/");
+    log.info(OPTION.getLog(),  split[0], callback.getFrom());
+    callback.setData(split[2]);
     return EditMessageReplyMarkup.builder()
         .chatId(callback.getMessage().getChatId().toString())
         .messageId(callback.getMessage().getMessageId())
@@ -91,13 +92,19 @@ public class RecipeService implements BotService {
   }
 
   public EditMessageReplyMarkup sendButtonTap(CallbackQuery callback) {
-    log.info(OPTION.getLog(), "/tap", callback);
-    log.info(callback.getData());
+    String[] split = getStrings(callback);
     return buttonsView.getPhotoButtonsTap(
-        dishesService.read(UUID.fromString(callback.getData().substring(2))),
+        dishesService.read(UUID.fromString(split[2])),
         callback.getMessage().getChatId().toString(),
         callback.getMessage().getMessageId(),
-        Integer.parseInt(callback.getData().substring(1, 2)));
+        Integer.parseInt(split[1])
+    );
+  }
+
+  private String[] getStrings(CallbackQuery callback) {
+    String[] split = callback.getData().split("/");
+    log.info(OPTION.getLog(), split[0], callback.getFrom());
+    return split;
   }
 
   //TODO Создание рецептов

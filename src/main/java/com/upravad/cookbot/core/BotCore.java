@@ -82,7 +82,6 @@ public class BotCore extends TelegramLongPollingBot {
   public void onUpdateReceived(Update update) {
 
     if (update.hasMessage() && update.getMessage().hasText()) {
-
       Set<Options> options = getOptionsSet();
 
       options.stream()
@@ -111,15 +110,14 @@ public class BotCore extends TelegramLongPollingBot {
       commit(recipeService.sendRecipe(update.getCallbackQuery()));
     }
 
-    if (update.hasCallbackQuery() && update.getCallbackQuery().getData().startsWith("w")) {
+    if (update.hasCallbackQuery() && update.getCallbackQuery().getData().startsWith("weight")) {
       commit(AnswerCallbackQuery.builder()
           .callbackQueryId(update.getCallbackQuery().getId())
           .build());
       commit(recipeService.sendButtonTap(update.getCallbackQuery()));
     }
 
-    if (update.hasCallbackQuery() && update.getCallbackQuery().getData().startsWith("back/")) {
-      log.info(update.getCallbackQuery().getData());
+    if (update.hasCallbackQuery() && update.getCallbackQuery().getData().startsWith("back")) {
       commit(AnswerCallbackQuery.builder()
           .callbackQueryId(update.getCallbackQuery().getId())
           .build());
